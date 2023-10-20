@@ -1,0 +1,45 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=production node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/user/repo"
+  },
+  "keywords": [
+    "express",
+    "starter",
+    "first-project",
+    "expressjs",
+    "starter-kit"
+  ],
+  "author": "Varadan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/user/repo/issues"
+  },
+  "homepage": "https://github.com/user/repo#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1374.0",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "express-async-handler": "^1.2.0",
+    "express-fileupload": "^1.4.0",
+    "helmet": "^6.0.0",
+    "jwt-simple": "^0.5.6",
+    "lodash": "^4.17.21",
+    "mongoose": "^6.5.4",
+    "morgan": "^1.10.0",
+    "node-schedule": "^2.1.0",
+    "nodemon": "^2.0.19",
+    "sha256": "^0.2.0"
+  }
+}
