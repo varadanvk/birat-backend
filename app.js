@@ -14,7 +14,7 @@ const app = express();
 if (dev) {
   // loading environment variable from different path in case of dev server
   require("dotenv").config({
-    path: path.resolve(process.cwd(), ".env.development.local"),
+    path: path.resolve(process.cwd(), ".env"),
   });
 
   // Allow api call from any origin on dev

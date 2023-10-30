@@ -7,6 +7,8 @@ var userSchema = new Schema({
   department: { type: String, default: "" },
   lab: { type: String, default: "" },
   email: { type: String, default: "" },
+  isVerified: { type: Boolean, default: false },
+  otp: { type: String, default: "" },
   password: { type: String, default: "" },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
