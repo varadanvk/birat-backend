@@ -1,12 +1,14 @@
 var express = require("express");
 var router = express.Router();
-
-router.get("/", function (req, res, next) {
-  return res.json({ d: "Working User API" });
-});
-
 const asyncHandler = require("express-async-handler");
 const UserService = require("../services/userService");
+
+router.get(
+  "/",
+  asyncHandler((req, res, next) => {
+    return UserService.getUser(req, res);
+  })
+);
 
 // API to login and register new user, dont required any auth in headers (check auth middleware)
 router.post(
@@ -16,7 +18,7 @@ router.post(
   })
 );
 router.post(
-  "/verify-email",
+  "/verify",
   asyncHandler((req, res, next) => {
     return UserService.verifyEmail(req, res);
   })

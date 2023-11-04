@@ -4,9 +4,17 @@ const secret = process.env.JWT_SECRET;
 const sha256 = require("sha256");
 
 module.exports = {
+  getUser: async (req, res) => {
+    let user = await User.findOne({ _id: req.user.userId });
+    if (user) {
+      return res.apiSuccess(user);
+    }
+    return res.apiError("No user found", 404);
+  },
+
   profile: async (req, res) => {
-    let u = await User.findOne({ _id: req.user.userId });
-    res.apiSuccess(u);
+    let user = await User.findOne({ _id: req.user.userId });
+    res.apiSuccess(user);
   },
 
   registerUser: async (req, res) => {
@@ -18,13 +26,13 @@ module.exports = {
     if (!department) return res.apiError("Department is required", 400);
     if (!password) return res.apiError("Password is required", 400);
 
-    let u = await User.findOne({ email: email });
-    if (u) {
+    let user = await User.findOne({ email: email });
+    if (user) {
       return res.apiError("Email is already registered!", 400);
     } else {
       password = sha256(password);
       otp = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
-      u = await User.create({
+      user = await User.create({
         email,
         password,
         name: fullName,
@@ -35,9 +43,9 @@ module.exports = {
         lab,
       });
       let data = {
-        name: u.name,
+        name: user.name,
         token: jwt.encode(
-          { userId: u.id.toString(), time: new Date().getTime() },
+          { userId: user.id.toString(), time: new Date().getTime() },
           secret
         ),
       };
@@ -47,14 +55,14 @@ module.exports = {
 
   loginUser: async (req, res) => {
     let { email, password } = req.body;
-    let u = await User.findOne({ email: email });
-    if (u) {
+    let user = await User.findOne({ email: email });
+    if (user) {
       password = sha256(password);
-      if (u.password == password) {
+      if (user.password == password) {
         let data = {
-          name: u.name,
+          name: user.name,
           token: jwt.encode(
-            { userId: u.id.toString(), time: new Date().getTime() },
+            { userId: user.id.toString(), time: new Date().getTime() },
             secret
           ),
         };
@@ -67,14 +75,14 @@ module.exports = {
   },
 
   verifyEmail: async (req, res) => {
-    let { otp, email } = req.body;
-    let u = await User.findOne({ email: email });
-    if (u) {
-      if (u.otp == otp) {
-        u.otp = "";
-        u.isVerified = true;
-        u.save();
-        return res.apiSuccess(data, "Email verified successfully!");
+    let { otp } = req.body;
+    let user = await User.findOne({ _id: req.user.userId });
+    if (user) {
+      if (user.otp == otp) {
+        user.otp = "";
+        user.isVerified = true;
+        user.save();
+        return res.apiSuccess(user, "Email verified successfully!");
       }
       return res.apiError("OTP doesn't match", 404);
     }
