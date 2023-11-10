@@ -2,30 +2,30 @@ var express = require("express");
 var router = express.Router();
 
 const asyncHandler = require("express-async-handler");
-const StudyService = require("../services/studyService");
+const ImageSeriesService = require("../services/imageSeriesService");
 
 router.post(
   "/",
   asyncHandler((req, res, next) => {
-    return StudyService.createProjectStudy(req, res);
+    return ImageSeriesService.createImageSeries(req, res);
   })
 );
 router.put(
   "/",
   asyncHandler((req, res, next) => {
-    return StudyService.updateProjectStudy(req, res);
+    return ImageSeriesService.updateImageSeries(req, res);
   })
 );
 router.get(
   "/",
   asyncHandler((req, res, next) => {
-    return StudyService.getProjectStudy(req, res);
+    return ImageSeriesService.getImageSeries(req, res);
   })
 );
 router.get(
   "/:id",
   asyncHandler((req, res, next) => {
-    return StudyService.getProjectStudyById(req, res);
+    return ImageSeriesService.getImageSeriesById(req, res);
   })
 );
 
