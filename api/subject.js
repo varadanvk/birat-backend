@@ -2,30 +2,37 @@ var express = require("express");
 var router = express.Router();
 
 const asyncHandler = require("express-async-handler");
-const ProjectService = require("../services/publicService");
+const SubjectService = require("../services/subjectService");
 
+// Create a new subject
 router.post(
   "/",
   asyncHandler((req, res, next) => {
-    return ProjectService.createProject(req, res);
+    return SubjectService.createSubject(req, res);
   })
 );
+
+// Update an existing subject
 router.put(
   "/",
   asyncHandler((req, res, next) => {
-    return ProjectService.updateProject(req, res);
+    return SubjectService.updateSubject(req, res);
   })
 );
+
+// Retrieve all subjects
 router.get(
   "/",
   asyncHandler((req, res, next) => {
-    return ProjectService.getProject(req, res);
+    return SubjectService.getSubjects(req, res);
   })
 );
+
+// Retrieve a single subject by ID
 router.get(
   "/:id",
   asyncHandler((req, res, next) => {
-    return ProjectService.getProjectById(req, res);
+    return SubjectService.getSubjectById(req, res);
   })
 );
 
