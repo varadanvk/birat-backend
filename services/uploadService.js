@@ -2,6 +2,10 @@
 // var AWS = require('aws-sdk')
 // const awsConfig = require('../config/aws');
 
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+
 // module.exports ={
 
 //     updloadSingleFileToS3: async(req, res) => {
@@ -39,9 +43,53 @@
 
 // }
 
-module.export = {
+// module.exports = {
+//   uploadFile: async (req, res) => {
+//     try {
+//       // let { imageSeriesId = "test", storageLocation = "" } = req.body;
+//       let imageSeriesId = "test";
+//       let storageLocation = "";
+//       // Ensure the directory exists
+//       const uploadPath = path.join(
+//         __dirname,
+//         `../upload/${imageSeriesId}/${storageLocation}`
+//       );
+//       fs.mkdirSync(uploadPath, { recursive: true });
+
+//       // // Set up Multer storage
+//       const storage = multer.diskStorage({
+//         destination: function (req, file, cb) {
+//           cb(null, uploadPath);
+//         },
+//         filename: function (req, file, cb) {
+//           cb(null, file.originalname);
+//         },
+//       });
+
+//       // // Multer upload
+//       const dynamicUpload = multer({ storage: storage }).single("file");
+//       dynamicUpload(req, res, function (err) {
+//         if (err) {
+//           return res.status(500).send(err.message);
+//         }
+//         res.send("File uploaded successfully.");
+//       });
+//     } catch (error) {
+//       res.status(500).send(`Error during file upload: ${error.message}`);
+//     }
+//   },
+// };
+
+module.exports = {
   uploadFile: async (req, res) => {
-    let { imageSeriesId, file } = req.body;
-    return res.apiSuccess("Files uploaded successfully!");
+    if (req.file) {
+      const filePath = req.file.path;
+      console.log("Uploaded file path:", filePath);
+
+      // Your additional logic here
+      res.send(`File uploaded successfully. Path: ${filePath}`);
+    } else {
+      res.status(400).send("No file uploaded.");
+    }
   },
 };

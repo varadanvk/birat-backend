@@ -7,9 +7,11 @@ router.get("/", function (req, res, next) {
 
 const asyncHandler = require("express-async-handler");
 const UploadService = require("../services/uploadService");
+const upload = require("../middlewares/multerFileUpload");
 
 router.post(
   "/file",
+  upload.single("file"),
   asyncHandler((req, res, next) => {
     return UploadService.uploadFile(req, res);
   })

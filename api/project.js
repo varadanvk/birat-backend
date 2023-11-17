@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 const asyncHandler = require("express-async-handler");
-const ProjectService = require("../services/publicService");
+const ProjectService = require("../services/projectService");
 
 router.post(
   "/",
@@ -19,7 +19,7 @@ router.put(
 router.get(
   "/",
   asyncHandler((req, res, next) => {
-    return ProjectService.getProject(req, res);
+    return ProjectService.getProjects(req, res);
   })
 );
 router.get(
