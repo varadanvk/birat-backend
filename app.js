@@ -7,7 +7,7 @@ const path = require("path");
 const events = require("events");
 const fileUpload = require("express-fileupload");
 
-const PORT = 8080; // PORT where your node server will run
+const PORT = 3001; // PORT where your node server will run
 const dev = process.env.NODE_ENV !== "production";
 const app = express();
 
