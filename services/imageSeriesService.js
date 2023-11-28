@@ -6,7 +6,8 @@ const sha256 = require("sha256");
 
 module.exports = {
   getImageSeries: async (req, res) => {
-    let u = await ImageSeries.find();
+    let { id } = req.params;
+    let u = await ImageSeries.find({ project_study: id });
     res.apiSuccess(u);
   },
 
@@ -20,13 +21,18 @@ module.exports = {
   },
 
   createImageSeries: async (req, res) => {
-    let { name } = req.body;
+    let { name, description, projectStudy, modality } = req.body;
     if (!name) return res.apiError("Name is required");
-    let u = await await ImageSeries.findOne({ name: name });
+    let u = await ImageSeries.findOne({ name, project_study: projectStudy });
     if (u) {
       return res.apiError(`Image Series name with ${name} already exist!`);
     } else {
-      u = await ImageSeries.create({ name });
+      u = await ImageSeries.create({
+        name,
+        description,
+        modality,
+        project_study: projectStudy,
+      });
       let data = {
         ...u,
       };

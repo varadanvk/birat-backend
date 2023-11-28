@@ -82,14 +82,34 @@ const path = require("path");
 
 module.exports = {
   uploadFile: async (req, res) => {
-    if (req.file) {
-      const filePath = req.file.path;
-      console.log("Uploaded file path:", filePath);
+    try {
+      if (!req.body || !req.files || !req.files.file) {
+        return res.apiError("No file provided!");
+      }
 
-      // Your additional logic here
-      res.send(`File uploaded successfully. Path: ${filePath}`);
-    } else {
-      res.status(400).send("No file uploaded.");
+      const { imageSeriesId = "test" } = req.body;
+      console.log(
+        "🚀 ~ file: uploadService.js:91 ~ uploadFile: ~ imageSeriesId:",
+        imageSeriesId
+      );
+
+      const fileData = req.files.file;
+      const filePath = `../upload/${imageSeriesId}/${fileData.name}`;
+
+      if (!fs.existsSync(`../upload/${imageSeriesId}`)) {
+        fs.mkdirSync(`../upload/${imageSeriesId}`, { recursive: true });
+      }
+
+      fs.writeFile(filePath, fileData.data, "binary", (err) => {
+        if (err) {
+          return res.apiError("Error writing file", 500);
+        }
+
+        return res.apiSuccess("File uploaded successfully");
+      });
+    } catch (error) {
+      console.error("Error in upload:", error);
+      return res.apiError("File upload failed!", 500);
     }
   },
 };

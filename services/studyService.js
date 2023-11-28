@@ -6,13 +6,14 @@ const sha256 = require("sha256");
 
 module.exports = {
   getProjectStudy: async (req, res) => {
-    let u = await ProjectStudy.find();
+    let { id } = req.params;
+    let u = await ProjectStudy.find({ project: id });
     res.apiSuccess(u);
   },
 
   getProjectStudyById: async (req, res) => {
-    let { _id } = req.body;
-    let u = await ProjectStudy.findById(_id);
+    let { id } = req.params;
+    let u = await ProjectStudy.findById(id);
     if (u) {
       return res.apiSuccess(u);
     }
@@ -20,13 +21,13 @@ module.exports = {
   },
 
   createProjectStudy: async (req, res) => {
-    let { name } = req.body;
+    let { name, description, project } = req.body;
     if (!name) return res.apiError("Name is required");
-    let u = await await ProjectStudy.findOne({ name: name });
+    let u = await await ProjectStudy.findOne({ name, project });
     if (u) {
       return res.apiError(`Project Study name with ${name} already exist!`);
     } else {
-      u = await ProjectStudy.create({ name });
+      u = await ProjectStudy.create({ name, description, project });
       let data = {
         ...u,
       };

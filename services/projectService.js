@@ -11,22 +11,22 @@ module.exports = {
   },
 
   getProjectById: async (req, res) => {
-    let { _id } = req.body;
-    let u = await Project.findById(_id);
+    let { id } = req.params;
+    let u = await Project.findById(id);
     if (u) {
       return res.apiSuccess(u);
     }
-    return res.apiError("No project found");
+    return res.apiError("No project found", 404);
   },
 
   createProject: async (req, res) => {
-    let { name } = req.body;
+    let { name, description } = req.body;
     if (!name) return res.apiError("Name is required");
     let u = await await Project.findOne({ name: name });
     if (u) {
       return res.apiError(`Project name with ${name} already exist!`);
     } else {
-      u = await Project.create({ name });
+      u = await Project.create({ name, description });
       let data = {
         ...u,
       };

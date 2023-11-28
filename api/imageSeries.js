@@ -17,13 +17,13 @@ router.put(
   })
 );
 router.get(
-  "/",
+  "/:id",
   asyncHandler((req, res, next) => {
     return ImageSeriesService.getImageSeries(req, res);
   })
 );
 router.get(
-  "/:id",
+  "/by-id/:id",
   asyncHandler((req, res, next) => {
     return ImageSeriesService.getImageSeriesById(req, res);
   })

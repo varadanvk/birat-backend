@@ -6,6 +6,11 @@ var projectSchema = new Schema({
   date_created: { type: Date, default: Date.now },
   description: { type: String, default: "" },
   owner: { type: Schema.Types.ObjectId, ref: "User" },
+  status: {
+    type: String,
+    enum: ["Not Started", "In Progress", "Completed"],
+    default: "Not Started",
+  },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
