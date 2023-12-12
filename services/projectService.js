@@ -35,11 +35,41 @@ module.exports = {
   },
 
   updateProject: async (req, res) => {
-    let { name, _id } = req.body;
-    let u = await User.updateOne({ _id }, { $set: { name } });
+    let { name, description } = req.body;
+    let uniqueName = await Project.findOne({ name: name });
+    let id = req.params.id;
+    let documentExists = await Project.findOne({ _id: id });
+
+    if (!documentExists) {
+      return res.apiError("No project found");
+    }
+
+    if (uniqueName) {
+      return res.apiError(`Project with name ${name} already exists! `);
+    } else {
+      let u = await Project.updateOne(
+        { _id: id },
+        { $set: { name: name, description: description } }
+      );
+      if (u) {
+        let data = {
+          ...u,
+          name,
+          description,
+        };
+        return res.apiSuccess(data);
+      }
+    }
+  },
+
+  updateProjectStatus: async (req, res) => {
+    let { status, id } = req.body;
+    let u = await Project.updateOne({ _id: id }, { $set: { status } });
     if (u) {
       let data = {
         ...u,
+        status,
+        id,
       };
       return res.apiSuccess(data);
     }

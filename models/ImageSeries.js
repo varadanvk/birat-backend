@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var imageSeriesSchema = new Schema({
   project_study: { type: Schema.Types.ObjectId, ref: "ProjectStudy" },
-  // subject: { type: Schema.Types.ObjectId, ref: "Subject" },
+  subject: [{ type: Schema.Types.ObjectId, ref: "Subject" }],
   name: { type: String, default: "" },
   date_created: { type: Date, default: Date.now },
   modality: { type: String, default: "" },

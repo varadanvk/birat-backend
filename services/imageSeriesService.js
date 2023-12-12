@@ -21,7 +21,7 @@ module.exports = {
   },
 
   createImageSeries: async (req, res) => {
-    let { name, description, projectStudy, modality } = req.body;
+    let { name, description, projectStudy, modality, subject } = req.body;
     if (!name) return res.apiError("Name is required");
     let u = await ImageSeries.findOne({ name, project_study: projectStudy });
     if (u) {
@@ -32,6 +32,7 @@ module.exports = {
         description,
         modality,
         project_study: projectStudy,
+        subject,
       });
       let data = {
         ...u,

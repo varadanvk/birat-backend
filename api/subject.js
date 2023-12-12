@@ -22,7 +22,7 @@ router.put(
 
 // Retrieve all subjects
 router.get(
-  "/",
+  "/:id",
   asyncHandler((req, res, next) => {
     return SubjectService.getSubjects(req, res);
   })

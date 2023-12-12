@@ -11,9 +11,15 @@ router.post(
   })
 );
 router.put(
-  "/",
+  "/:id",
   asyncHandler((req, res, next) => {
     return ProjectService.updateProject(req, res);
+  })
+);
+router.put(
+  "/status/:id",
+  asyncHandler((req, res, next) => {
+    return ProjectService.updateProjectStatus(req, res);
   })
 );
 router.get(

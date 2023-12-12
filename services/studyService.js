@@ -21,13 +21,13 @@ module.exports = {
   },
 
   createProjectStudy: async (req, res) => {
-    let { name, description, project } = req.body;
+    let { name, description, project, subject } = req.body;
     if (!name) return res.apiError("Name is required");
     let u = await await ProjectStudy.findOne({ name, project });
     if (u) {
       return res.apiError(`Project Study name with ${name} already exist!`);
     } else {
-      u = await ProjectStudy.create({ name, description, project });
+      u = await ProjectStudy.create({ name, description, project, subject });
       let data = {
         ...u,
       };
@@ -37,7 +37,7 @@ module.exports = {
 
   updateProjectStudy: async (req, res) => {
     let { name, _id } = req.body;
-    let u = await User.updateOne({ _id }, { $set: { name } });
+    let u = await ProjectStudy.updateOne({ _id }, { $set: { name } });
     if (u) {
       let data = {
         ...u,

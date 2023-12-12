@@ -3,10 +3,12 @@ const Subject = require("../models/Subject");
 const jwt = require("jwt-simple");
 const secret = process.env.JWT_SECRET;
 const sha256 = require("sha256");
+const ProjectStudy = require("../models/ProjectStudy");
 
 module.exports = {
   getSubjects: async (req, res) => {
-    let subjects = await Subject.find();
+    let { id } = req.params;
+    let subjects = await Subject.find({ project: id });
     res.apiSuccess(subjects);
   },
 
@@ -20,13 +22,13 @@ module.exports = {
   },
 
   createSubject: async (req, res) => {
-    let { name } = req.body;
+    let { name, description, project } = req.body;
     if (!name) return res.apiError("Name is required");
-    let existingSubject = await Subject.findOne({ name: name });
+    let existingSubject = await Subject.findOne({ name: name, project });
     if (existingSubject) {
       return res.apiError(`Subject with name ${name} already exists!`);
     } else {
-      let newSubject = await Subject.create({ name });
+      let newSubject = await Subject.create({ name, description, project });
       return res.apiSuccess(newSubject);
     }
   },

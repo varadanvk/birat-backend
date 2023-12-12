@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var projectStudySchema = new Schema({
   project: { type: Schema.Types.ObjectId, ref: "Project" },
-  subject: { type: Schema.Types.ObjectId, ref: "Subject" },
+  subject: [{ type: Schema.Types.ObjectId, ref: "Subject" }],
   name: { type: String, default: "" },
   status: {
     type: String,
