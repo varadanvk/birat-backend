@@ -1,5 +1,9 @@
 const User = require("../models/User");
 const Project = require("../models/Project");
+const Study = require("../models/ProjectStudy");
+const Scan = require("../models/ImageSeries");
+const Image = require("../models/Image");
+const Subject = require("../models/Subject");
 const jwt = require("jwt-simple");
 const secret = process.env.JWT_SECRET;
 const sha256 = require("sha256");
@@ -66,6 +70,7 @@ module.exports = {
     let { status, id } = req.body;
     let u = await Project.updateOne({ _id: id }, { $set: { status } });
     if (u) {
+      x;
       let data = {
         ...u,
         status,
@@ -77,11 +82,28 @@ module.exports = {
   },
 
   deleteProject: async (req, res) => {
-    let { _id } = req.body;
-    let u = await await Project.findOne({ name: name });
-    if (u) {
-      await User.deleteOne({ _id });
-      return res.apiSuccess(null);
+    let id = req.params.id;
+    //finds and deletes all studies, scans, images, and subjects associated with the project
+    let projectFound = await Project.findById(id);
+    if (projectFound) {
+      let studyFound = await Study.find({ project: id });
+      let subjectFound = await Subject.find({ project: id });
+      if (subjectFound) {
+        await Subject.deleteMany({ project: id });
+      }
+      if (studyFound) {
+        let scanFound = await Scan.find({ study: studyFound._id });
+        if (scanFound) {
+          let imageFound = await Image.find({ scan: scanFound._id });
+          if (imageFound) {
+            await Image.deleteMany({ scan: scanFound._id });
+          }
+          await Scan.deleteMany({ study: studyFound._id });
+        }
+        await Study.deleteMany({ project: id });
+      }
+      await Project.deleteOne({ _id: id });
+      return res.apiSuccess(u);
     }
     return res.apiError("No project found");
   },

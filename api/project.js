@@ -34,5 +34,11 @@ router.get(
     return ProjectService.getProjectById(req, res);
   })
 );
+router.delete(
+  "/:id",
+  asyncHandler((req, res, next) => {
+    return ProjectService.deleteProject(req, res);
+  })
+);
 
 module.exports = router;
