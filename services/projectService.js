@@ -10,13 +10,13 @@ const sha256 = require("sha256");
 
 module.exports = {
   getProjects: async (req, res) => {
-    let u = await Project.find();
+    let u = await Project.find({ owner: req.user.userId });
     res.apiSuccess(u);
   },
 
   getProjectById: async (req, res) => {
     let { id } = req.params;
-    let u = await Project.findById(id);
+    let u = await Project.findOne({ _id: id, owner: req.user.userId });
     if (u) {
       return res.apiSuccess(u);
     }
@@ -26,11 +26,11 @@ module.exports = {
   createProject: async (req, res) => {
     let { name, description } = req.body;
     if (!name) return res.apiError("Name is required");
-    let u = await await Project.findOne({ name: name });
+    let u = await await Project.findOne({ name: name, owner: req.user.userId });
     if (u) {
       return res.apiError(`Project name with ${name} already exist!`);
     } else {
-      u = await Project.create({ name, description });
+      u = await Project.create({ name, description, owner: req.user.userId });
       let data = {
         ...u,
       };
@@ -40,7 +40,10 @@ module.exports = {
 
   updateProject: async (req, res) => {
     let { name, description } = req.body;
-    let uniqueName = await Project.findOne({ name: name });
+    let uniqueName = await Project.findOne({
+      name: name,
+      owner: req.user.userId,
+    });
     let id = req.params.id;
     let documentExists = await Project.findOne({ _id: id });
 
@@ -48,7 +51,7 @@ module.exports = {
       return res.apiError("No project found");
     }
 
-    if (uniqueName) {
+    if (uniqueName && uniqueName._id != id) {
       return res.apiError(`Project with name ${name} already exists! `);
     } else {
       let u = await Project.updateOne(
@@ -68,7 +71,10 @@ module.exports = {
 
   updateProjectStatus: async (req, res) => {
     let { status, id } = req.body;
-    let u = await Project.updateOne({ _id: id }, { $set: { status } });
+    let u = await Project.updateOne(
+      { _id: id, owner: req.user.userId },
+      { $set: { status } }
+    );
     if (u) {
       x;
       let data = {
@@ -84,7 +90,10 @@ module.exports = {
   deleteProject: async (req, res) => {
     let id = req.params.id;
     //finds and deletes all studies, scans, images, and subjects associated with the project
-    let projectFound = await Project.findById(id);
+    let projectFound = await Project.findOne({
+      _id: id,
+      owner: req.user.userId,
+    });
     if (projectFound) {
       let studyFound = await Study.find({ project: id });
       let subjectFound = await Subject.find({ project: id });
@@ -103,7 +112,7 @@ module.exports = {
         await Study.deleteMany({ project: id });
       }
       await Project.deleteOne({ _id: id });
-      return res.apiSuccess(u);
+      return res.apiSuccess(projectFound);
     }
     return res.apiError("No project found");
   },

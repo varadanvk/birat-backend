@@ -28,5 +28,11 @@ router.get(
     return StudyService.getProjectStudyById(req, res);
   })
 );
+router.delete(
+  "/:id",
+  asyncHandler((req, res, next) => {
+    return StudyService.deleteProjectStudy(req, res);
+  })
+);
 
 module.exports = router;

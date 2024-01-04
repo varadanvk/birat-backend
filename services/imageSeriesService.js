@@ -7,25 +7,33 @@ const sha256 = require("sha256");
 module.exports = {
   getImageSeries: async (req, res) => {
     let { id } = req.params;
-    let u = await ImageSeries.find({ project_study: id });
+    let u = await ImageSeries.find({
+      project_study: id,
+      owner: req.user.userId,
+    });
     res.apiSuccess(u);
   },
 
   getImageSeriesById: async (req, res) => {
     let { _id } = req.body;
-    let u = await ImageSeries.findById(_id);
+    let u = await ImageSeries.findOne({ _id, owner: req.user.userId });
     if (u) {
       return res.apiSuccess(u);
     }
-    return res.apiError("No ImageSeries found");
+    return res.apiError("No ImageSeries found", 404);
   },
 
   createImageSeries: async (req, res) => {
     let { name, description, projectStudy, modality, subject } = req.body;
     if (!name) return res.apiError("Name is required");
-    let u = await ImageSeries.findOne({ name, project_study: projectStudy });
+
+    let u = await ImageSeries.findOne({
+      name,
+      project_study: projectStudy,
+      owner: req.user.userId,
+    });
     if (u) {
-      return res.apiError(`Image Series name with ${name} already exist!`);
+      return res.apiError(`Image Series name with ${name} already exists!`);
     } else {
       u = await ImageSeries.create({
         name,
@@ -33,33 +41,41 @@ module.exports = {
         modality,
         project_study: projectStudy,
         subject,
+        owner: req.user.userId, // Assuming each ImageSeries has an owner field
       });
-      let data = {
-        ...u,
-      };
+      let data = { ...u };
       return res.apiSuccess(data);
     }
   },
 
   updateImageSeries: async (req, res) => {
     let { name, _id } = req.body;
-    let u = await User.updateOne({ _id }, { $set: { name } });
-    if (u) {
-      let data = {
-        ...u,
-      };
-      return res.apiSuccess(data);
+    let documentExists = await ImageSeries.findOne({
+      _id,
+      owner: req.user.userId,
+    });
+
+    if (!documentExists) {
+      return res.apiError("No Image Series found", 404);
+    } else {
+      let u = await ImageSeries.updateOne(
+        { _id, owner: req.user.userId },
+        { $set: { name } }
+      );
+      if (u) {
+        let data = { ...u, name };
+        return res.apiSuccess(data);
+      }
     }
-    return res.apiError("No Image Series found");
   },
 
   deleteImageSeries: async (req, res) => {
     let { _id } = req.body;
-    let u = await ImageSeries.findOne({ name: name });
+    let u = await ImageSeries.findOne({ _id, owner: req.user.userId });
     if (u) {
-      await User.deleteOne({ _id });
+      await ImageSeries.deleteOne({ _id });
       return res.apiSuccess(null);
     }
-    return res.apiError("No Image Series found");
+    return res.apiError("No Image Series found", 404);
   },
 };
