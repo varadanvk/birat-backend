@@ -12,6 +12,7 @@ var projectStudySchema = new Schema({
   },
   date_created: { type: Date, default: Date.now },
   description: { type: String, default: "" },
+  owner: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 projectStudySchema.pre("save", function (next) {

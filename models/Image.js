@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 var imageFileSchema = new Schema({
   image_series: { type: Schema.Types.ObjectId, ref: "ImageSeries" },
   name: { type: String, default: "" },
+  owner: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 imageFileSchema.pre("save", function (next) {

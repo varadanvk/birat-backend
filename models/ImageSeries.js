@@ -8,6 +8,7 @@ var imageSeriesSchema = new Schema({
   date_created: { type: Date, default: Date.now },
   modality: { type: String, default: "" },
   description: { type: String, default: "" },
+  owner: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 imageSeriesSchema.pre("save", function (next) {
