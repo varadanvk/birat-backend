@@ -6,6 +6,8 @@ const sha256 = require("sha256");
 
 module.exports = {
   getImageSeries: async (req, res) => {
+    if (!req.user) return res.apiError("Unauthorized access", 401);
+
     let { id } = req.params;
     let u = await ImageSeries.find({
       project_study: id,
@@ -15,6 +17,8 @@ module.exports = {
   },
 
   getImageSeriesById: async (req, res) => {
+    if (!req.user) return res.apiError("Unauthorized access", 401);
+
     let { _id } = req.body;
     let u = await ImageSeries.findOne({ _id, owner: req.user.userId });
     if (u) {
@@ -24,6 +28,8 @@ module.exports = {
   },
 
   createImageSeries: async (req, res) => {
+    if (!req.user) return res.apiError("Unauthorized access", 401);
+
     let { name, description, projectStudy, modality, subject } = req.body;
     if (!name) return res.apiError("Name is required");
 
@@ -49,6 +55,8 @@ module.exports = {
   },
 
   updateImageSeries: async (req, res) => {
+    if (!req.user) return res.apiError("Unauthorized access", 401);
+
     let { name, _id } = req.body;
     let documentExists = await ImageSeries.findOne({
       _id,
@@ -70,6 +78,8 @@ module.exports = {
   },
 
   deleteImageSeries: async (req, res) => {
+    if (!req.user) return res.apiError("Unauthorized access", 401);
+
     let { _id } = req.body;
     let u = await ImageSeries.findOne({ _id, owner: req.user.userId });
     if (u) {

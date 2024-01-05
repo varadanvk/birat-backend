@@ -5,14 +5,25 @@ const secret = process.env.JWT_SECRET;
 const sha256 = require("sha256");
 const ProjectStudy = require("../models/ProjectStudy");
 
+function checkAuth(req, res, next) {
+  if (!req.user) return res.apiError("Unauthorized access", 401);
+  next();
+}
+
 module.exports = {
   getSubjects: async (req, res) => {
+    // Authorization check
+    checkAuth(req, res, next);
+
     let { id } = req.params;
     let subjects = await Subject.find({ project: id, owner: req.user.userId });
     res.apiSuccess(subjects);
   },
 
   getSubjectById: async (req, res) => {
+    // Authorization check
+    checkAuth(req, res, next);
+
     let { _id } = req.body;
     let subject = await Subject.findOne({ _id, owner: req.user.userId });
     if (subject) {
@@ -22,6 +33,9 @@ module.exports = {
   },
 
   createSubject: async (req, res) => {
+    // Authorization check
+    checkAuth(req, res, next);
+
     let { name, description, project } = req.body;
     if (!name) return res.apiError("Name is required");
     let existingSubject = await Subject.findOne({
@@ -43,6 +57,9 @@ module.exports = {
   },
 
   updateSubject: async (req, res) => {
+    // Authorization check
+    checkAuth(req, res, next);
+
     let { name, _id } = req.body;
     let updateResult = await Subject.updateOne(
       { _id, owner: req.user.userId },
@@ -56,6 +73,9 @@ module.exports = {
   },
 
   deleteSubject: async (req, res) => {
+    // Authorization check
+    checkAuth(req, res, next);
+
     let { _id } = req.body;
     let subject = await Subject.findOne({ _id, owner: req.user.userId });
     if (subject) {
