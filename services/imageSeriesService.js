@@ -30,7 +30,8 @@ module.exports = {
   createImageSeries: async (req, res) => {
     if (!req.user) return res.apiError("Unauthorized access", 401);
 
-    let { name, description, projectStudy, modality, subject } = req.body;
+    let { name, description, projectStudy, modality, subject, aws_link } =
+      req.body;
     if (!name) return res.apiError("Name is required");
 
     let u = await ImageSeries.findOne({

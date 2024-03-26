@@ -9,6 +9,7 @@ var imageSeriesSchema = new Schema({
   modality: { type: String, default: "" },
   description: { type: String, default: "" },
   owner: { type: Schema.Types.ObjectId, ref: "User" },
+  aws_link: { type: String, default: "" },
 });
 
 imageSeriesSchema.pre("save", function (next) {
